@@ -40,6 +40,10 @@ public class NumberListFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
+        if (savedInstanceState != null) {
+            int size = savedInstanceState.getInt(DATA_KEY, 0);
+            fillData(size);
+        }
         return inflater.inflate(R.layout.fragment_number_list, parent, false);
     }
 
@@ -66,7 +70,9 @@ public class NumberListFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 addNumber();
-                recyclerView.getAdapter().notifyDataSetChanged();
+                if (recyclerView.getAdapter() != null) {
+                    recyclerView.getAdapter().notifyItemInserted(numbers.size()-1);
+                }
             }
         });
 
@@ -76,7 +82,6 @@ public class NumberListFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true);
     }
 
     public void fillData(int numberOfItems) {
@@ -87,7 +92,7 @@ public class NumberListFragment extends Fragment {
     }
 
     public void addNumber() {
-        Integer last = (Integer) numbers.get(numbers.size() - 1);
+        Integer last = numbers.get(numbers.size() - 1);
         last++;
         numbers.add(last);
     }
@@ -106,7 +111,7 @@ public class NumberListFragment extends Fragment {
 
         private List<Integer> mData;
 
-        public NumberListAdapter(List<Integer> data) {
+        NumberListAdapter(List<Integer> data) {
             mData = data;
         }
 
@@ -133,8 +138,10 @@ public class NumberListFragment extends Fragment {
         }
 
         @Override
-        public int getItemCount() {
-            return mData.size();
-        }
+        public int getItemCount() { return mData.size(); }
     }
 }
+
+//nonull
+// как работать с нулами
+// почему нормально работает на + 1
